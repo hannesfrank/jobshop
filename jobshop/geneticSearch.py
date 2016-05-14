@@ -3,7 +3,7 @@ from .jobshop import *
 import random
 import time
 
-# TODO do we need to parameterize select?
+# TODO do we need to parameterize select? (probably yes)
 def geneticSearchTemplate(jobs, mutate, recombine, populationSize=20, maxTime=None):
     """
     Genetic algorithm for the jobshop scheduling problem.
@@ -45,20 +45,20 @@ def geneticSearchTemplate(jobs, mutate, recombine, populationSize=20, maxTime=No
                 next_generation = []
                 while len(fittest) + len(next_generation) < populationSize:
                     next_generation.append(
-                        recombine(random.choice(fittest)[1], random.choice(fittest)[1]))
+                        recombine(jobs, random.choice(fittest)[1], random.choice(fittest)[1]))
 
                 # dummy value for cost
-                population = fittest + [(0, s) for s in next_generation]  
+                population = fittest + [(0, s) for s in next_generation]
 
                 # old idea
                 # random.shuffle(fittest)
                 # for (_, i1), (_, i2) in zip(*[iter(goodPopulation)]*2):
                 #     # TODO randomize which parts are taken from which individual
-                #     pass           
+                #     pass
 
                 # (3) mutation
                 for _, individual in population:
-                    mutate(individual)
+                    mutate(jobs, individual)
 
                 # reevaluate population
                 population = [(cost(jobs, i), i) for _, i in population]
@@ -86,7 +86,7 @@ def geneticSearchTemplate(jobs, mutate, recombine, populationSize=20, maxTime=No
                 numGenerations //= 2
             elif t < 1.5:
                 numGenerations *= 2
-        
+
         except (KeyboardInterrupt, OutOfTime) as e:
             print()
             print("================================================")
@@ -98,15 +98,15 @@ def geneticSearchTemplate(jobs, mutate, recombine, populationSize=20, maxTime=No
             return solutions[-1]
 
 
-def recombine_dummy(s1, s2):
-    return s1
-
-
-def mutate_dummy(s):
+def mutate_dummy(jobs, s):
     pass
 
 
-def mutate_permuteSubsequence(s, max_shuffle_fraction=4):
+def recombine_dummy(jobs, s1, s2):
+    return s1
+
+
+def mutate_permuteSubsequence(jobs, s, max_shuffle_fraction=4):
     """Mutate by random.shuffling a subsequence of a schedule."""
     a, b = sorted([random.randint(0, len(s) - 1), random.randint(0, len(s) - 1)])
 
@@ -119,6 +119,12 @@ def mutate_permuteSubsequence(s, max_shuffle_fraction=4):
     shuffle(s, a, b)
 
 
-def mutate_swap(s):
+def mutate_swap(jobs, s):
     """Mutate by swapping two instructions."""
-    a, b = random.randint(0, l - 1)
+    a, b = random.randint(0, len(s) - 1)
+
+
+def recombine_simpleCrossover(jobs, s1, s2):
+    """Recombine with classic crossover."""
+    cut = random.randint(0, len(s) - 1)
+    return normalizeSchedule(jobs, s1[:cut] + s2[cut:])
