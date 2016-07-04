@@ -22,10 +22,31 @@ def select_tournament(jobs, population, tournament_size=10, p=0.9):
     return nextGen
 
 
-def select_richard(jobs, population):
-    # TODO: richard selection: partition population and keep best of fraction of group
-    raise(NotImplementedError("Implement Richards selection idea"))
+def select_richard(jobs, population, dividend=5):
+    # richard selection: partition population and keep best of fraction of group
+    nextGen = []
+    counter = 0
+    while counter < len(population):
+        nextOffset = random.randint(2, int(len(population)/dividend))
+        subPopulation = population[counter:counter+nextOffset]
+        nextGen.extend(select_best(jobs, subPopulation))
+        counter += nextOffset
+    return nextGen
 
+def select_stochastic(jobs, population):
+    # stochastic selection
+    # better solutions have greater chance to stay but may also be killed
+    population = sorted(population)
+    nextGen = []
+    populationSize = len(population)
+    while nextGen == []:
+        for i in range(populationSize):
+            randomNumber = random.randint(0,populationSize)
+            if i < randomNumber:
+                nextGen.append(population[i])
+            else:
+                pass
+    return nextGen
 
 def recombine_first(jobs, s1, s2):
     """Dummy recombine."""
@@ -70,7 +91,7 @@ def geneticSearchTemplate(jobs, recombine, mutate=mutate_none, select=select_bes
     """
     Genetic algorithm for the jobshop scheduling problem.
     """
-
+    random.seed(2)
     numGenerations = 10   # generations calculated between logging
     solutions = []   # list of (time, schedule) with decreasing time
     best = 10000000  # TODO set initial value for max of add check in loop
