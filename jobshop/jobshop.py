@@ -30,7 +30,7 @@ The schedules
  - 220011012
  - 202101021
  - ...
-would all result in the scedule
+would all result in the schedule
 
 [ 2  ][0 ]      [1 ]
           [0][1][2]
@@ -167,7 +167,10 @@ def costPartial(jobs, partialSchedule):
     """
     # (1) Ignore instructions for already finished jobs.
     # (2) Deterministically complete unfinished jobs after
-    raise NotImplementedError("TODO")
+
+    # TODO this can be done more efficiently
+    return cost(jobs, normalizeSchedule(partialSchedule))
+
 
 
 def normalizeSchedule(jobs, partialSchedule):
@@ -180,8 +183,28 @@ def normalizeSchedule(jobs, partialSchedule):
     # because ignoring instructions means, that the schedule is
     # longer than j*m, so static arrays are problematic.
     # Maybe use 2 arrays and read one and write to the other.
-    raise NotImplementedError("TODO")
 
+    j = len(jobs)
+    m = len(jobs[0])
+
+    occurences = [0] * j
+    normalizedSchedule = []
+
+    for t in partialSchedule:
+        if occurences[t] < m:
+            normalizedSchedule.append(t)
+            occurences[t] += 1
+        else:
+            # ignore job for now
+            pass
+
+    # TODO finish schedule greedy for better performance
+    # this has to be done in the same way as in costPartial
+    for t, count in enumerate(occurences):
+        if count < m:
+            normalizedSchedule.extend([t] * (m - count))
+
+    return normalizedSchedule
 
 class OutOfTime(Exception):
     pass
@@ -304,31 +327,4 @@ def shuffle(x, start=0, stop=None):
         # pick an element in x[start: i+1] with which to exchange x[i]
         j = random.randint(start, i)
         x[i], x[j] = x[j], x[i]
-
-
-if __name__ == '__main__':
-    abz5 = 'instances/abz5'
-    vorlesungsbeispiel = 'instances/vorlesungsbeispiel'
-    tai01 = 'instances/tai01'  # upper boulnd: 1231, lower bound 1005
-
-    jobs = readJobs(abz5)
-
-    m = len(jobs[0])
-    j = len(jobs)
-
-    print("Number of machines:", m)
-    print("Number of jobs:", j)
-    # printJobs(jobs)
-
-    # rs = randomSchedule(j, m)
-    # print(cost(jobs, rs))
-
-    cost, solution = randomSearch(jobs, 3)
-    # cost, solution = evoSearch(jobs, maxTime=4)
-
-    # printSchedule(jobs, solution)
-    # prettyPrintSchedule(jobs, solution)
-
-    # a solution for vorlesungsbeispiel
-    # prettyPrintSchedule(jobs, [0, 0, 1, 2, 1, 1, 2, 2, 0])
 

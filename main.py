@@ -1,4 +1,9 @@
 from jobshop import *
+from jobshop import geneticSearch
+
+from functools import partial
+
+# TODO: make command line program
 
 if __name__ == '__main__':
     abz5 = 'instances/abz5'
@@ -19,7 +24,14 @@ if __name__ == '__main__':
 
     # cost, solution = randomSearch(jobs, maxTime=20)
     # cost, solution = simulatedAnnealingSearch(jobs, maxTime=20)
-    # cost, solution = geneticSearchTemplate(jobs, mutate_permuteSubsequence, recombine_dummy, maxTime=20)
+
+    select = geneticSearch.select_best
+    recombine = geneticSearch.recombine_simpleCrossover
+    # mutate = partial(geneticSearch.mutate_swap, num_swaps=10)
+    mutate = partial(geneticSearch.mutate_permuteSubsequence, max_shuffle_fraction=8)
+
+    cost, solution = geneticSearchTemplate(jobs, select=select, recombine=recombine, mutate=mutate, maxTime=20)
+
 
     # printSchedule(jobs, solution)
     # prettyPrintSchedule(jobs, solution)
