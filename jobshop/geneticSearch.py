@@ -4,13 +4,13 @@ import random
 import time
 
 
-def select_best(jobs, population):
-    """Keep best half of population"""
+def select_best(jobs, population, fraction=0.5):
+    """Keep best fraction (in [0, 1]) of population"""
     population.sort()
     # get an even number of individuals
     # return population[:(populationSize//4) * 2]
     # select best half
-    return population[:max(len(population) // 2, 1)]
+    return population[:max(int(fraction * len(population)), 1)]
 
 
 def select_tournament(jobs, population, tournament_size=10, p=0.9):
