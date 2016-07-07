@@ -91,7 +91,7 @@ def geneticSearchTemplate(jobs, recombine, mutate=mutate_none, select=select_bes
     """
     Genetic algorithm for the jobshop scheduling problem.
     """
-    random.seed(2)
+
     numGenerations = 10   # generations calculated between logging
     solutions = []   # list of (time, schedule) with decreasing time
     best = 10000000  # TODO set initial value for max of add check in loop

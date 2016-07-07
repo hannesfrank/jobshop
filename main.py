@@ -27,6 +27,22 @@ if __name__ == '__main__':
         action="store", dest="mutate",
         help="Choose Mutationmethod: permutate, swap", default="permutate")
 
+    parser.add_option('-n', '--neighbourhood',
+        action="store", dest="neighbourhood",
+        help="Choose Mode for neighbourhood: random, normal", default="random")
+
+    parser.add_option('-t', '--temp',
+        action="store", dest="temperature",
+        help="Choose Number for temperature", default=200)
+
+    parser.add_option('-e', '--termination',
+        action="store", dest="termination",
+        help="Choose Number for termination", default=10)
+
+    parser.add_option('-g', '--halting',
+        action="store", dest="halting",
+        help="Choose Number for halting", default=10)
+
     parser.add_option('-d', '--seed',
         action="store", dest="seed",
         help="Choose Number for Seed", default=1)
@@ -50,12 +66,34 @@ if __name__ == '__main__':
     # print(cost(jobs, rs))
 
     # cost, solution = randomSearch(jobs, maxTime=20)
-    # cost, solution = simulatedAnnealingSearch(jobs, maxTime=20)
     if str(options.seed).isdigit():
         random.seed(options.seed)
     else:
         print("No valid seed, default: 1")
-        random.seed(1) 
+        random.seed(1)
+
+    if options.neighbourhood == "random":
+        neighbourhood = "random"
+    elif options.neighbourhood == "normal":
+        neighbourhood = "normal"
+    else:
+        print("No valid neighbourhood chosen, default: random")
+        neighbourhood = "random"
+
+    if str(options.temperature).isdigit():
+        temperature = options.temperature
+    else:
+        temperature = 200   
+
+    if str(options.termination).isdigit():
+        termination = options.termination
+    else:
+        termination = 10 
+
+    if str(options.halting).isdigit():
+        halting = options.halting
+    else:
+        halting = 10 
 
     if options.select == "best":
         select = geneticSearch.select_best
@@ -87,7 +125,7 @@ if __name__ == '__main__':
     if options.algorithm == "GS":
         cost, solution = geneticSearchTemplate(jobs, select=select, recombine=recombine, mutate=mutate, maxTime=20)
     elif options.algorithm == "SA":
-        cost, solution = simulatedAnnealingSearch(jobs, maxTime=20)
+        cost, solution = simulatedAnnealingSearch(jobs, maxTime=20, T=temperature, termination=termination, halting=halting, mode=neighbourhood)
     else:
         print("No valid algorithm chosen, default: GS")
         cost, solution = geneticSearchTemplate(jobs, select=select, recombine=recombine, mutate=mutate, maxTime=20)

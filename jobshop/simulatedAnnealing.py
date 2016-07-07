@@ -46,7 +46,7 @@ def simulatedAnnealing(jobs, T=200, termination=10, halting=10, mode="random"):
 
 
 
-def simulatedAnnealingSearch(jobs, maxTime=None):
+def simulatedAnnealingSearch(jobs, maxTime=None, T=200, termination=10, halting=10, mode="random"):
     """
     Perform random search for problem instance jobs.
     Set maxTime to limit the computation time or raise
@@ -70,7 +70,7 @@ def simulatedAnnealingSearch(jobs, maxTime=None):
             start = time.time()
 
             for i in range(numExperiments):
-                cost, schedule = simulatedAnnealing(jobs)
+                cost, schedule = simulatedAnnealing(jobs, T=T, termination=termination, halting=halting, mode=mode)
 
                 if cost < best:
                     best = cost
