@@ -43,6 +43,10 @@ if __name__ == '__main__':
         action="store", dest="halting",
         help="Choose Number for halting", default=10)
 
+    parser.add_option('-c', '--decrease',
+        action="store", dest="decrease",
+        help="Choose Number for decrease below 1", default=0.8)
+
     parser.add_option('-d', '--seed',
         action="store", dest="seed",
         help="Choose Number for Seed", default=1)
@@ -67,7 +71,7 @@ if __name__ == '__main__':
 
     # cost, solution = randomSearch(jobs, maxTime=20)
     if str(options.seed).isdigit():
-        random.seed(options.seed)
+        random.seed(int(options.seed))
     else:
         print("No valid seed, default: 1")
         random.seed(1)
@@ -81,19 +85,24 @@ if __name__ == '__main__':
         neighbourhood = "random"
 
     if str(options.temperature).isdigit():
-        temperature = options.temperature
+        temperature = int(options.temperature)
     else:
         temperature = 200   
 
     if str(options.termination).isdigit():
-        termination = options.termination
+        termination = int(options.termination)
     else:
         termination = 10 
 
     if str(options.halting).isdigit():
-        halting = options.halting
+        halting = int(options.halting)
     else:
         halting = 10 
+
+    if options.decrease:
+        decrease = options.decrease
+    else:
+        decrease = 0.8 
 
     if options.select == "best":
         select = geneticSearch.select_best
@@ -125,7 +134,7 @@ if __name__ == '__main__':
     if options.algorithm == "GS":
         cost, solution = geneticSearchTemplate(jobs, select=select, recombine=recombine, mutate=mutate, maxTime=20)
     elif options.algorithm == "SA":
-        cost, solution = simulatedAnnealingSearch(jobs, maxTime=20, T=temperature, termination=termination, halting=halting, mode=neighbourhood)
+        cost, solution = simulatedAnnealingSearch(jobs, maxTime=20, T=int(temperature), termination=int(termination), halting=int(halting), mode=neighbourhood, decrease=float(decrease))
     else:
         print("No valid algorithm chosen, default: GS")
         cost, solution = geneticSearchTemplate(jobs, select=select, recombine=recombine, mutate=mutate, maxTime=20)

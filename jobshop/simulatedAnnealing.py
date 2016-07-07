@@ -19,14 +19,14 @@ def getNeigbors(state, mode="normal"):
 
     return allNeighbors
 
-def simulatedAnnealing(jobs, T=200, termination=10, halting=10, mode="random"):
+def simulatedAnnealing(jobs, T, termination, halting, mode, decrease):
     numberOfJobs = len(jobs)
     numberOfMachines = len(jobs[0])
 
     state = randomSchedule(numberOfJobs, numberOfMachines)
 
     for i in range(halting):
-        T = 0.8 * T
+        T = decrease * float(T)
 
         for k in range(termination):
             actualCost = cost(jobs, state)
@@ -46,7 +46,7 @@ def simulatedAnnealing(jobs, T=200, termination=10, halting=10, mode="random"):
 
 
 
-def simulatedAnnealingSearch(jobs, maxTime=None, T=200, termination=10, halting=10, mode="random"):
+def simulatedAnnealingSearch(jobs, maxTime=None, T=200, termination=10, halting=10, mode="random", decrease=0.8):
     """
     Perform random search for problem instance jobs.
     Set maxTime to limit the computation time or raise
@@ -70,7 +70,7 @@ def simulatedAnnealingSearch(jobs, maxTime=None, T=200, termination=10, halting=
             start = time.time()
 
             for i in range(numExperiments):
-                cost, schedule = simulatedAnnealing(jobs, T=T, termination=termination, halting=halting, mode=mode)
+                cost, schedule = simulatedAnnealing(jobs, T=T, termination=termination, halting=halting, mode=mode, decrease=decrease)
 
                 if cost < best:
                     best = cost
