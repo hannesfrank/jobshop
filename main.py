@@ -49,19 +49,24 @@ if __name__ == '__main__':
 
     parser.add_option('-d', '--seed',
         action="store", dest="seed",
-        help="Choose Number for Seed", default=1)
+        help="Choose Number for Seed", default=random.randint(0,10000))
+
+    parser.add_option('-f', '--file',
+        action="store", dest="file",
+        help="Choose Path to file", default='instances/abz5')
 
     options, args = parser.parse_args()
 
-    abz5 = 'instances/abz5'
-    vorlesungsbeispiel = 'instances/vorlesungsbeispiel'
-    tai01 = 'instances/tai01'  # upper boulnd: 1231, lower bound 1005
+    #abz5 = 'instances/abz5'
+    #vorlesungsbeispiel = 'instances/vorlesungsbeispiel'
+    #tai01 = 'instances/tai01'  # upper boulnd: 1231, lower bound 1005
 
-    jobs = readJobs(tai01)
+    jobs = readJobs(options.file)
 
     m = len(jobs[0])
     j = len(jobs)
-
+    print("Chosen file:", options.file)
+    print("Chosen algorithm:", options.algorithm)
     print("Number of machines:", m)
     print("Number of jobs:", j)
     # printJobs(jobs)
